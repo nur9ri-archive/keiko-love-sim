@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toPng } from "html-to-image";
 
 const prologue = [
@@ -54,7 +54,7 @@ const scenes = [
 
 어제 주운 책갈피는 작은 종이 한 장일 뿐인데,
 이상하게 쉽게 가방에서 꺼낼 수 없었다.`, button: "책갈피 돌려주기" },
-    question: `다음 날, 유저는 케이코쨩에게 책갈피를 돌려준다.
+    question: `다음 날, 당신은 케이코쨩에게 책갈피를 돌려준다.
 케이코쨩은 책갈피를 받아 들고 잠시 침묵한다.
 
 “이걸… 버리지 않고 가져왔네.”`,
@@ -94,11 +94,11 @@ const scenes = [
 미나는 장난스럽게 웃다가, 곧 목소리를 낮췄다.
 
 “근데 조심해. 걔, 예전 일이 좀 있어.”`, button: "미나의 말 듣기" },
-    question: `케이코쨩의 과 동기 미나가 유저에게 말을 건다.
+    question: `케이코쨩의 과 동기 미나가 당신에게 말을 건다.
 
 “케이코, 예전엔 글 진짜 잘 썼어. 근데 어느 순간부터 아예 안 쓰더라. 무슨 일 있었던 것 같긴 한데…”
 
-유저는 케이코쨩의 과거가 궁금해진다.`,
+당신은 케이코쨩의 과거가 궁금해진다.`,
     choices: [
       { id: "A", text: "케이코쨩이 직접 말해줄 때까지 기다릴게.", scores: { affection: 1, trust: 2, sincerity: 2 }, reaction: "넌 이상하게… 선을 넘지 않네." },
       { id: "B", text: "가끔 그런 사람 있잖아. 남들이랑 조금 다른 결을 가진 사람. 케이코쨩도 그런 쪽 같아.", scores: { pressure: 1, cultFlag: 2 }, reaction: "다른 결… 그 말은 칭찬 같기도 하고, 조금 이상하기도 해." },
@@ -115,7 +115,7 @@ const scenes = [
 도서관 앞 처마 아래,
 케이코쨩은 우산 없이 조용히 비를 바라보고 있었다.`, button: "다가가기" },
     question: `갑자기 비가 쏟아진다.
-유저는 우산을 들고 있고, 케이코쨩은 우산 없이 도서관 앞에 서 있다.
+당신은 우산을 들고 있고, 케이코쨩은 우산 없이 도서관 앞에 서 있다.
 
 케이코쨩은 비를 바라보다 작게 말한다.
 
@@ -199,7 +199,7 @@ const scenes = [
 
 “이번 주말에 시간 있어?”
 
-유저가 놀라자 케이코쨩은 살짝 눈을 피한다.
+당신이 놀라자 케이코쨩은 살짝 눈을 피한다.
 
 “보여주고 싶은 곳이 있어.”`,
     choices: [
@@ -254,7 +254,7 @@ const endings = {
 
 그리고 두둥실 떠올라 멀리 자유롭게 날아가버렸습니다.
 
-..그래도 케이코쨩이 행복해졌으니 됬잖아요? ` },
+..그래도 케이코쨩이 행복해졌으니 됐잖아요? ` },
   pressure: { number: "ENDING 05", title: "너무 가까운 거리", type: "부담 실패 엔딩", image: "ending-pressure.webp", quote: "좋아한다는 말이, 상대의 거리를 무시해도 된다는 뜻은 아니야.", desc: `당신의 마음은 진심이었을지 모릅니다.
 하지만 진심이라는 이유만으로 상대의 속도를 무시할 수는 없습니다.
 
@@ -359,11 +359,12 @@ function Bg({ type = "library" }) {
         src={imageMap[type]}
         alt=""
         className="absolute inset-0 h-full w-full object-cover"
+        loading="eager"
+        decoding="async"
         onError={(event) => {
           event.currentTarget.style.display = "none";
         }}
       />
-
       <div className="absolute inset-0 bg-gradient-to-b from-white/12 via-transparent to-[#f8f2ea]/55" />
     </div>
   );
@@ -439,6 +440,26 @@ export default function App() {
   const [reaction, setReaction] = useState("");
   const [reactionImage, setReactionImage] = useState("keiko-neutral.webp");
   const [answers, setAnswers] = useState(Array(scenes.length).fill(null));
+
+  useEffect(() => {
+    const imageSources = [
+      "/images/main/main-bg.webp",
+      "/images/backgrounds/library-bg.webp",
+      "/images/backgrounds/bookmark-closeup.webp",
+      "/images/backgrounds/classroom.webp",
+      "/images/backgrounds/campus.webp",
+      "/images/backgrounds/rainy-campus.webp",
+      "/images/backgrounds/hallway.webp",
+      "/images/backgrounds/night-room.webp",
+      "/images/backgrounds/park.webp",
+      "/images/characters/keiko-main.webp",
+    ];
+  
+    imageSources.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   const scores = useMemo(() => calculateScores(answers), [answers]);
   const ending = useMemo(() => endings[getEndingId(scores)], [scores]);
