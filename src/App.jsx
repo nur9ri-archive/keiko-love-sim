@@ -711,6 +711,20 @@ export default function App() {
           >
             다시하기
           </button>
+          <div className="mt-8 border-t border-[#d8c9eb] pt-5 text-center">
+            <p className="text-xs leading-5 text-[#8a7c99]">
+              © 2026 만든이 너굴이. All rights reserved.
+            </p>
+          
+            <a
+              href="https://blog.naver.com/nur9ri"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center justify-center rounded-full border border-[#cdbbe4] bg-white px-5 py-2 text-sm font-bold text-[#4a345d] shadow-sm transition active:scale-[0.97]"
+            >
+              개발자 너굴이 만나기
+            </a>
+          </div>
         </div>
       </div>
     </Phone>
